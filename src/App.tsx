@@ -2,62 +2,41 @@ import React, { useState } from 'react';
 import './App.css';
 
 
-interface CellsRowProps {
-  amount: Array<number>;
-  board: Array<Array<number>>;
-  YRowIndex: number;
-}
+const Playground = () => {
+  const EMPTY_BOARD = [ [0, 0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0, 0],
+                        [0, 0, 0, 0, 0, 0, 0, 0]];
 
-function CellsRow(props: CellsRowProps) {
-  return (
-    <div className='cells-row'>
-      {props.amount.map(
-        el =>  
-        <div 
-          className='cell' 
-          style={ !(props.board[props.YRowIndex][el] === 0) 
-                  ? props.board[props.YRowIndex][el] === 1 
-                  ? { backgroundColor: 'red' } 
-                  : { backgroundColor: 'blue' }
-                  : {} }
-        />
-      )}              
-    </div>
-  )
-}
-
-
-export default function Playground() {
-  const emptyBoard = [[0, 0, 0, 0, 0, 0, 0, 0],
-                      [0, 0, 0, 0, 0, 0, 0, 0],
-                      [0, 0, 0, 0, 0, 0, 0, 0],
-                      [0, 0, 0, 0, 0, 0, 0, 0],
-                      [0, 0, 0, 0, 0, 0, 0, 0],
-                      [0, 0, 0, 0, 0, 0, 0, 0],
-                      [0, 0, 0, 0, 0, 0, 0, 0],
-                      [0, 0, 0, 0, 0, 0, 0, 0]];
-
-  let [player, setPlayer] = useState(1);
-  let [board, setBoard] = useState(emptyBoard);
-  let [firstScore, setFirstScore] = useState(0);
-  let [secondScore, setSecondScore] = useState(0);
-  let [isPlaying, setIsPlaying] = useState(true);
+  const [state, setState] = useState({
+    player: 1,
+    board: EMPTY_BOARD,
+    firstScore: 0,
+    secondScore: 0,
+    isPlaying: true,
+    columns: [0, 1, 2, 3, 4, 5, 6, 7],
+    rows: [0, 1, 2, 3, 4, 5, 6, 7],
+  });
 
   function handleClick(xIndex: number) {
     for (let i = 7; i >= 0; i--) {
-      if (board[i][xIndex] === 0 && isPlaying) {
-        let boardCopy = board;
-        boardCopy[i][xIndex] = player;
+      if (state.board[i][xIndex] === 0 && state.isPlaying) {
+        let boardCopy = state.board;
+        boardCopy[i][xIndex] = state.player;
 
-        setBoard(boardCopy);
+        setState({...state, board: boardCopy});
 
         checkWin(i, xIndex);
 
-        if (player == 1) {
-          setPlayer(-1);
+        if (state.player == 1) {
+          setState({...state, player: -1});
         }
         else {
-          setPlayer(1);
+          setState({...state, player: 1});
         }
 
         break;
@@ -68,10 +47,11 @@ export default function Playground() {
   function checkWin(y:number, x:number) {
     checkHorizontalWin(y);
 
+    // checks bounds to avoid "list index out of range" error
     if (y <= 4) {
-      if (board[y][x] + board[y+1][x] + 
-          board[y+2][x] + board[y+3][x] == player * 4) {
-        callResult(player);
+      if (state.board[y][x] + state.board[y+1][x] + 
+          state.board[y+2][x] + state.board[y+3][x] == state.player * 4) {
+        callResult(state.player);
       }
     }
 
@@ -82,16 +62,16 @@ export default function Playground() {
   function checkHorizontalWin(y: number) {
     let sum = 0;
 
-    for (let i = 0; i < board[y].length; i++) {
-      if (board[y][i] === player) {
-        sum += player;
+    for (let i = 0; i < state.board[y].length; i++) {
+      if (state.board[y][i] === state.player) {
+        sum += state.player;
       }
       else {
         sum = 0;
       }
 
-      if (sum === player * 4) {
-        callResult(player);
+      if (sum === state.player * 4) {
+        callResult(state.player);
         break;
       }
     }
@@ -116,7 +96,7 @@ export default function Playground() {
     }
 
     while (yCopy < 8 && yCopy >= 0 && xCopy < 8){
-      if (board[yCopy][xCopy] == player) {
+      if (state.board[yCopy][xCopy] == state.player) {
         sum++;
       }
       else {
@@ -133,7 +113,7 @@ export default function Playground() {
       }
 
       if (sum === 4) {
-        callResult(player);
+        callResult(state.player);
         break;
       }
     }
@@ -141,43 +121,70 @@ export default function Playground() {
 
   function callResult(player: number){
     if (player == 1) {
-      setFirstScore((prev) => prev + 1);
-      setIsPlaying(false);
-    }
+      setState({...state, firstScore: state.firstScore + 1});
+    } 
     else {
-      setSecondScore((prev) => prev + 1);
-      setIsPlaying(false);
+      setState({...state, secondScore: state.secondScore + 1});
     }
+    setState({...state, isPlaying: false});
   }
 
   function restartGame() {
-    setBoard(emptyBoard);
-    setIsPlaying(true);
+    setState({...state, board: EMPTY_BOARD,
+                        isPlaying: true});
+  }
+
+  const CellsContainer = () => {
+    return (
+      <div className='cell-container'>
+      { state.rows.map( yIndex =>
+          <div className='cells-row'
+               key={yIndex}>
+            {state.columns.map( xIndex => 
+              <div 
+                className='cell' 
+                key={xIndex}
+                style={ !(state.board[yIndex][xIndex] === 0) 
+                        ? state.board[yIndex][xIndex] === 1 
+                        ? { backgroundColor: 'red' } 
+                        : { backgroundColor: 'blue' }
+                        : {} }
+              />
+            )} </div>
+        )} </div>
+    );
+  }
+
+  const ButtonsArea = () => {
+    return (
+      <div className='buttons-row'>
+      { state.columns.map(
+          el => <div className='buttons' key={el} 
+                     onClick={() => handleClick(el)}>▲</div>
+      )} </div>
+    );
+  }
+
+  const ScoreTable = () => {
+    return (
+      <div className='players-display'>
+        <h1 className='score' style={state.player === 1 ? {backgroundColor: 'red'} : {color: 'red'}}>
+          {state.firstScore}</h1>
+        <h1 className='score' style={state.player === -1 ? {backgroundColor: 'blue'} : {color: 'blue'}}>
+          {state.secondScore}</h1>
+      </div>
+    );
   }
 
   return (
     <div className='canvas'>
-      <div className='cell-container'>
-        <CellsRow YRowIndex={0} amount={[0, 1, 2, 3, 4, 5, 6, 7]} board={board} />
-        <CellsRow YRowIndex={1} amount={[0, 1, 2, 3, 4, 5, 6, 7]} board={board} />
-        <CellsRow YRowIndex={2} amount={[0, 1, 2, 3, 4, 5, 6, 7]} board={board} />
-        <CellsRow YRowIndex={3} amount={[0, 1, 2, 3, 4, 5, 6, 7]} board={board} />
-        <CellsRow YRowIndex={4} amount={[0, 1, 2, 3, 4, 5, 6, 7]} board={board} />
-        <CellsRow YRowIndex={5} amount={[0, 1, 2, 3, 4, 5, 6, 7]} board={board} />
-        <CellsRow YRowIndex={6} amount={[0, 1, 2, 3, 4, 5, 6, 7]} board={board} />
-        <CellsRow YRowIndex={7} amount={[0, 1, 2, 3, 4, 5, 6, 7]} board={board} />
-      </div>
-      <div className='buttons-row'>
-        {[0,1,2,3,4,5,6,7].map(
-          el => <div className='buttons' key={el} onClick={() => handleClick(el)}>▲</div>
-        )}
-      </div>
-      <div className='players-display'>
-        <h1 className='score' style={player === 1 ? {backgroundColor: 'red'} : {color: 'red'}}>{firstScore}</h1>
-        <h1 className='score' style={player === -1 ? {backgroundColor: 'blue'} : {color: 'blue'}}>{secondScore}</h1>
-      </div>
+      <CellsContainer />
+      <ButtonsArea />
+      <ScoreTable />
       <div className='button--restart' onClick={restartGame}>⭮</div>
     </div>
   )
 }
 
+
+export default Playground;
