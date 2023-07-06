@@ -11,7 +11,7 @@ Winning positions can be horizontal, vertical or diagonal.
 ```
 
 
-### `How it works?`
+## `How it works?`
 
 ```
 Each cell is zero in matrix, so we have matrix 8x8, that filled 
@@ -31,7 +31,7 @@ clear.
 ```
 
 
-### `Technologies`
+## `Technologies`
 
 This project was made using React.ts
 
