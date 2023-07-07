@@ -1,17 +1,18 @@
 # Four in a row
 
 
-## `Rules`
+## Rules
 
 
 <p>Two players fill the columns from bottom to top. <br>
 Player, who will fill four (or more) cells in a row in <br>
-his color, wins. <br>
-Winning positions can be horizontal, vertical or diagonal.</p>
+his color, wins. </p>
+<p>*Winning positions can be horizontal, vertical or diagonal.</p>
 
 
 
-## `How it works?`
+
+## How it works?
 
 
 <p>Each cell is zero in matrix, so we have matrix 8x8, that filled <br>
@@ -31,7 +32,7 @@ clear. </p>
 
 
 
-## `Technologies`
+## Technologies
 
 <p>This project was made using React.ts</p>
 
