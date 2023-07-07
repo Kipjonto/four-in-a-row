@@ -2,10 +2,13 @@
   height: 100%; width: 100vw;
   position: absolute;
   top: 0; left: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   flex-direction: column;
+}
+
+.flex-center-center {
+  display: flex;  
+  align-items: center;
+  justify-content: center;  
 }
 
 .cell-container {
@@ -43,9 +46,7 @@
   width: 12.5%;
   aspect-ratio: 3/2;
   background-color: rgb(116, 181, 254);
-  display: flex;
   cursor: pointer;
-  align-items: center; justify-content: center;
   transition: .3s;
 }
 
@@ -56,8 +57,6 @@
 .button--restart {
   height: 40px; width: 40px;
   font-size: 24px;
-  display: flex; align-items: center;
-  justify-content: center;
   transition: .3s;
   cursor: pointer;
   border-radius: 100%;
@@ -78,7 +77,5 @@
 .score {
   transition: 0.3s;
   width: 44px; aspect-ratio: 1;
-  display: flex;
   border-radius: 100%;
-  justify-content: center; align-items: center;
 }
