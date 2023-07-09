@@ -46,8 +46,9 @@ const Playground = () => {
   function checkWin(y:number, x:number) {
     checkHorizontalWin(y);
 
-    // checks bounds to avoid "list index out of range" error
+    // Checks bounds to avoid "list index out of range" error
     if (y <= 4) {
+      // Checks vertical win
       if (board[y][x] + board[y+1][x] + 
           board[y+2][x] + board[y+3][x] == player * 4) {
         callResult(player);
@@ -136,19 +137,15 @@ const Playground = () => {
   const CellsContainer = () => {
     return (
       <div className='cell-container'>
-      { ROWS.map( yIndex =>
-          <div className='cells-row'
-               key={yIndex}>
-            {COLUMNS.map( xIndex => 
-              <div 
-                className='cell' 
-                key={xIndex}
-                style={ !(board[yIndex][xIndex] === 0) 
-                        ? board[yIndex][xIndex] === 1 
-                        ? { backgroundColor: 'red' } 
-                        : { backgroundColor: 'blue' }
-                        : {} }
-              />
+        {ROWS
+          .map( yIndex => <div className='cells-row' key={yIndex}>
+            {COLUMNS
+              .map( xIndex => <div className='cell' key={xIndex}
+                    style={ !(board[yIndex][xIndex] === 0) 
+                            ? board[yIndex][xIndex] === 1 
+                            ? { backgroundColor: 'red' } 
+                            : { backgroundColor: 'blue' }
+                            : {} }/>
             )} </div>
         )} </div>
     );
@@ -157,9 +154,9 @@ const Playground = () => {
   const ButtonsArea = () => {
     return (
       <div className='buttons-row'>
-      { COLUMNS.map(
-          el => <div className='flex-center-center buttons' key={el} 
-                     onClick={() => handleClick(el)}>▲</div>
+      { COLUMNS
+          .map( el => <div className='flex-center-center buttons' key={el} 
+                           onClick={() => handleClick(el)}>▲</div>
       )} </div>
     );
   }
