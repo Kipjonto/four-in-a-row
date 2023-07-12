@@ -20,7 +20,7 @@ const Playground = () => {
   const [secondScore, setSecondScore] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
 
-  var points = 0;
+  let points = 0;
 
   function handleClick(xIndex: number) {
     let y = -1, x = -1;
