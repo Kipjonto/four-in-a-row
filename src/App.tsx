@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
 
 const Playground = () => {
-  const EMPTY_BOARD = Array<Array<string>>(8).fill(Array<string>(8).fill(''));
+  const EMPTY_BOARD = [['', '', '', '', '', '', '', ''],
+                       ['', '', '', '', '', '', '', ''],
+                       ['', '', '', '', '', '', '', ''],
+                       ['', '', '', '', '', '', '', ''],
+                       ['', '', '', '', '', '', '', ''],
+                       ['', '', '', '', '', '', '', ''],
+                       ['', '', '', '', '', '', '', ''],
+                       ['', '', '', '', '', '', '', '']];
   const COLUMNS = [0, 1, 2, 3, 4, 5, 6, 7];
   const ROWS = [0, 1, 2, 3, 4, 5, 6, 7];
 
@@ -12,31 +19,39 @@ const Playground = () => {
   const [firstScore, setFirstScore] = useState(0);
   const [secondScore, setSecondScore] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [points, setPoints] = useState(0);
+
+  var points = 0;
 
   function handleClick(xIndex: number) {
+    let y = -1, x = -1;
+
     for (let i = 7; i >= 0; i--) {
       if (board[i][xIndex] === '' && isPlaying) {
-        let boardCopy = board;
-        boardCopy[i][xIndex] = player;
-        setBoard(boardCopy);
-
-        countVerticalWin(i, xIndex);
-        countHorizontalWin(i);
-        countDiagonalWin(i, xIndex, 'LeftTop->RightBottom');
-        countDiagonalWin(i, xIndex, 'LeftBottom->RightTop');
-
-        if (player === 'red') {
-          setPlayer('blue');
-        } else {
-          setPlayer('red');
-        }
-
-        if (points > 0) {
-          callResult();
-        }
+        y = i;
+        x = xIndex;
 
         break;
+      } 
+    }
+
+    if (y !== -1) {
+      let boardCopy = board;
+      boardCopy[y][x] = player;
+      setBoard(boardCopy);
+      
+      countVerticalWin(y, x);
+      countHorizontalWin(y);
+      countDiagonalWin(y, x, 'LeftTop->RightBottom');
+      countDiagonalWin(y, x, 'LeftBottom->RightTop');
+  
+      if (player === 'red') {
+        setPlayer('blue');
+      } else {
+        setPlayer('red');
+      }
+
+      if (points > 0) {
+        callResult();
       }
     }
   }
@@ -48,7 +63,7 @@ const Playground = () => {
       const isPlayersColor = board[y][x] === player;
 
       if (isCommonColors && isPlayersColor) {
-        setPoints(prev => prev + 1);
+        points++;
       }
     }
   }
@@ -57,8 +72,14 @@ const Playground = () => {
     let sum = 0;
 
     for (let i = 0; i < board[y].length; i++) {
-      if (sum > 3 && board[y][i] != player) {
-        setPoints(prev => prev + sum - 3);
+      const isCountingEnded = sum > 3 && board[y][i] != player;
+      const isLastAndMatchableIndex = sum > 3 && i === board[y].length-1;
+      
+      if (isCountingEnded) {
+        points += sum - 3;
+        break;
+      } else if (isLastAndMatchableIndex) {
+        points += sum - 2;
         break;
       }
 
@@ -88,10 +109,12 @@ const Playground = () => {
     }
 
     while (yCopy < 8 && yCopy >= 0 && xCopy < 8) {
-      if (sum > 3 && board[yCopy][xCopy] != player) {
-        setPoints(prev => prev + sum - 3);
+      const isCountingEnded = sum > 3 && board[yCopy][xCopy] != player;
+
+      if (isCountingEnded) {
+        points += sum - 3;
         break;
-      }
+      } 
 
       if (board[yCopy][xCopy] === player) {
         sum++;
@@ -100,27 +123,39 @@ const Playground = () => {
       }
 
       xCopy++;
+      if (xCopy === 8 && sum > 3) {
+        points += sum - 3;
+        break;
+      }
 
       if (variance === 'LeftBottom->RightTop') {
         yCopy--;
+        if (yCopy === -1 && sum > 3) {
+          points += sum - 3;
+          break;
+        }
       } else {
         yCopy++;
+        if (yCopy === 8 && sum > 3) {
+          points += sum - 3;
+          break;
+        }
       }
     }
   }
 
   function callResult() {
+    setIsPlaying(false);
+
     if (player === 'red') {
       setFirstScore(prev => prev + points);
     } else {
       setSecondScore(prev => prev + points);
     }
-
-    setIsPlaying(false);
-    setPoints(0);
   }
-
+  
   function restartGame() {
+    points = 0;
     setBoard(EMPTY_BOARD);
     setIsPlaying(true);
   }
