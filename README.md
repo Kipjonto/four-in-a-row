@@ -14,7 +14,3 @@ Player, who will fill four (or more) cells in a row in his color, wins. </p>
 ```
 
 
-## Technologies
-
-<p>This project was made with React.ts</p>
-
