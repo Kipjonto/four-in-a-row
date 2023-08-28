@@ -13,4 +13,11 @@ Player, who will fill four (or more) cells in a row in his color, wins. </p>
 *All directions count separately (that means, that player will get his points for each winning direction)
 ```
 
+### `Installation`
+* Install Node Package Manager (npm)
+* Download this project
+* Choose this project using `cd %LOCAL_PATH%/four-in-a-row` in your console
+* Run `npm install` console command to install npm dependences
+* Run `npm start` console command to launch a local server
+* Enjoy!
 
